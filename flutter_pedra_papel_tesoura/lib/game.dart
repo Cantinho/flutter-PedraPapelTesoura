@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:math';
 
 class Game extends StatefulWidget {
   @override
@@ -7,6 +7,47 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
+
+  var _options = ["pedra", "papel", "tesoura"];
+
+  var _imageResult = AssetImage("images/padrao.png");
+  var _textResult = "Escolha uma opção abaixo";
+
+  void _selectedOption(String option) {
+
+    var number = Random().nextInt(3);
+    var appChoice = _options[number];
+
+
+    if ( (option == "pedra" && appChoice == "tesoura") ||
+         (option == "papel" && appChoice == "pedra")   ||
+         (option == "tesoura" && appChoice == "papel") ) {
+
+      setState(() {
+        _textResult = "Parabéns!!! Você ganhou!!! :)";
+      });
+
+    } else if (
+        (appChoice == "pedra" && option == "tesoura") ||
+        (appChoice == "papel" && option == "pedra")   ||
+        (appChoice == "tesoura" && option == "papel") ) {
+
+      setState(() {
+        _textResult = "Você perdeu :(";
+      });
+
+    } else {
+      setState(() {
+        _textResult = "Empatamos ;)";
+      });
+
+    }
+
+    setState(() {
+      this._imageResult = AssetImage("images/$appChoice.png");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,13 +67,12 @@ class _GameState extends State<Game> {
                 fontWeight: FontWeight.bold
               ),
             ),
-
           ),
-          Image.asset("images/padrao.png"),
+          Image(image: this._imageResult),
           Padding(
             padding: EdgeInsets.only(top: 32, bottom: 16),
             child: Text(
-              "Escolha uma opção abaixo",
+              _textResult,
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 20,
@@ -43,9 +83,19 @@ class _GameState extends State<Game> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Image.asset("images/pedra.png", height: 100),
-              Image.asset("images/papel.png", height: 100),
-              Image.asset("images/tesoura.png", height: 100),
+              GestureDetector(
+                onTap: ()=> _selectedOption("pedra"),
+                child: Image.asset("images/pedra.png", height: 100),
+              ),
+              GestureDetector(
+                onTap: ()=> _selectedOption("papel"),
+                child: Image.asset("images/papel.png", height: 100),
+
+              ),
+              GestureDetector(
+                onTap: ()=> _selectedOption("tesoura"),
+                child: Image.asset("images/tesoura.png", height: 100),
+              ),
             ],
           ),
         ],
